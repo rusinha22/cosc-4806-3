@@ -4,6 +4,7 @@
     <title>Register</title>
 </head>
 <body>
+
     <h2>Register</h2>
     <form method="POST" action="/create/register">
         <input type="text" name="username" placeholder="Username" required><br><br>
