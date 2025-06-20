@@ -1,32 +1,39 @@
 <?php
-// Handles user registration logic and form submission
 
 class Create extends Controller {
 
-    // Shows the register form
     public function index() {
         $this->view('create/index');
     }
 
-    // Handles form submission
     public function register() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $username = $_POST['username'];
+            $username = trim($_POST['username']);
             $password = $_POST['password'];
             $confirm  = $_POST['confirm'];
 
+            // Validation: passwords must match
             if ($password !== $confirm) {
-                echo "Passwords do not match.";
+                echo "❌ Passwords do not match.";
                 return;
             }
 
-            if (!empty($username) && !empty($password)) {
-                $user = $this->model('User');
+            // Validation: fields can't be empty
+            if (empty($username) || empty($password)) {
+                echo "❌ All fields are required.";
+                return;
+            }
+
+            // Try to create user
+            $user = $this->model('User');
+            try {
                 $user->createUser($username, $password);
-                header("Location: /login");
-                exit;
-            } else {
-                echo "Please fill in all fields.";
+               header("Location: /login");
+               exit;
+
+            } catch (Exception $e) {
+                echo "❌ Registration failed: " . $e->getMessage();
+                return;
             }
         }
     }
