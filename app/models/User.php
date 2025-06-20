@@ -8,7 +8,7 @@ class User {
 
     public function __construct() {}
 
-    // Just fetches one user row (for debugging/test purposes)
+    // Just fetches one user row (for debugging purposes)
     public function test() {
         $db = db_connect();
         $statement = $db->prepare("SELECT * FROM users;");
