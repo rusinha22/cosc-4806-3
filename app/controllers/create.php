@@ -1,4 +1,5 @@
 <?php
+// Handles user registration logic and form submission
 
 class Create extends Controller {
 
