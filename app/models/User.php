@@ -17,7 +17,9 @@ class User {
         return $rows;
     }
 
-    // Authenticate user on login
+    // Authenticate user on loginn
+    // Verifies user credentials and starts session if valid
+
     public function authenticate($username, $password) {
         $username = strtolower($username);
         $db = db_connect();
