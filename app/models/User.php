@@ -43,6 +43,8 @@ class User {
     }
 
     // Create a new user in the database
+    // Creates a new user account with hashed password
+
     public function createUser($username, $password) {
         $username = strtolower($username);
         $hash = password_hash($password, PASSWORD_DEFAULT);
