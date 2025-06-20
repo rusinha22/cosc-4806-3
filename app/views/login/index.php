@@ -1,5 +1,6 @@
 	<?php require_once 'app/views/templates/headerPublic.php'; ?>
-<!-- Login form view for user authentication -->
+<!-- Login form view for user authentication 
+invalid or valid -->
 
 	<main role="main" class="container">
 		<div class="page-header" id="banner">
