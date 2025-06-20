@@ -1,7 +1,7 @@
 <?php
 // Handles user login requests
 class Login extends Controller {
-
+	// Shows the login form
     public function index() {		
 	    $this->view('login/index');
     }
