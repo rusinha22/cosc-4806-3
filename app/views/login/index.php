@@ -42,3 +42,4 @@ invalid or valid -->
 	</main>
 
 	<?php require_once 'app/views/templates/footer.php'; ?>
+<!-- create account link -->
