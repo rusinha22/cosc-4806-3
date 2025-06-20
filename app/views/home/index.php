@@ -1,4 +1,6 @@
-<?php require_once 'app/views/templates/header.php' ?>
+<?php 
+// Home page view for logged in users
+require_once 'app/views/templates/header.php' ?>
 <div class="container">
     <div class="page-header" id="banner">
         <div class="row">
