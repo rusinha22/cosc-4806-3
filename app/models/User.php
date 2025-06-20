@@ -17,7 +17,8 @@ class User {
         return $rows;
     }
 
-    // Authenticate user on loginn
+    // Authenticate user on logining in
+    // Authenticates user credentials and starts session if valid
     // Verifies user credentials and starts session if valid
 
     public function authenticate($username, $password) {
