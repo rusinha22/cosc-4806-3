@@ -1,5 +1,5 @@
 <?php
-
+// Handles user login requests
 class Login extends Controller {
 
     public function index() {		
