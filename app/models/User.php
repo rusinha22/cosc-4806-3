@@ -6,45 +6,71 @@ class User {
     public $password;
     public $auth = false;
 
-    public function __construct() {
-        
+    public function __construct() {}
+
+    // Just fetches one user row (for debugging/test purposes)
+    public function test() {
+        $db = db_connect();
+        $statement = $db->prepare("SELECT * FROM users;");
+        $statement->execute();
+        $rows = $statement->fetch(PDO::FETCH_ASSOC);
+        return $rows;
     }
 
-    public function test () {
-      $db = db_connect();
-      $statement = $db->prepare("select * from users;");
-      $statement->execute();
-      $rows = $statement->fetch(PDO::FETCH_ASSOC);
-      return $rows;
-    }
-
+    // Authenticate user on login
     public function authenticate($username, $password) {
-        /*
-         * if username and password good then
-         * $this->auth = true;
-         */
-		$username = strtolower($username);
-		$db = db_connect();
-        $statement = $db->prepare("select * from users WHERE username = :name;");
+        $username = strtolower($username);
+        $db = db_connect();
+
+        $statement = $db->prepare("SELECT * FROM users WHERE username = :name;");
         $statement->bindValue(':name', $username);
         $statement->execute();
         $rows = $statement->fetch(PDO::FETCH_ASSOC);
-		
-		if (password_verify($password, $rows['password'])) {
-			$_SESSION['auth'] = 1;
-			$_SESSION['username'] = ucwords($username);
-			unset($_SESSION['failedAuth']);
-			header('Location: /home');
-			die;
-		} else {
-			if(isset($_SESSION['failedAuth'])) {
-				$_SESSION['failedAuth'] ++; //increment
-			} else {
-				$_SESSION['failedAuth'] = 1;
-			}
-			header('Location: /login');
-			die;
-		}
+
+        if ($rows && password_verify($password, $rows['password'])) {
+            $_SESSION['auth'] = 1;
+            $_SESSION['username'] = ucwords($username);
+            unset($_SESSION['failedAuth']);
+            header('Location: /home');
+            exit;
+        } else {
+            $_SESSION['failedAuth'] = ($_SESSION['failedAuth'] ?? 0) + 1;
+            header('Location: /login');
+            exit;
+        }
     }
 
+    // Create a new user in the database
+    public function createUser($username, $password) {
+        $username = strtolower($username);
+        $hash = password_hash($password, PASSWORD_DEFAULT);
+        $db = db_connect();
+
+        // Check if username already exists
+        $checkStmt = $db->prepare("SELECT rupsin FROM users WHERE username = :username");
+        $checkStmt->bindValue(':username', $username);
+        $checkStmt->execute();
+
+        if ($checkStmt->fetch()) {
+            echo "<p style='color:red;'>❌ Username already exists!</p>";
+            echo "<p><a href='/create'>Go back to register</a></p>";
+            return;
+        }
+
+        // Try inserting new user
+        try {
+            $statement = $db->prepare("INSERT INTO users (username, password) VALUES (:username, :password)");
+            $statement->bindValue(':username', $username);
+            $statement->bindValue(':password', $hash);
+            $statement->execute();
+
+            echo "<p style='color:green;'>✅ Account created successfully!</p>";
+            echo "<p>Redirecting to login...</p>";
+            header("Refresh: 3; URL=/login"); // Auto-redirect after 3 seconds
+            exit;
+
+        } catch (PDOException $e) {
+            echo "<p style='color:red;'>❌ Registration failed: " . $e->getMessage() . "</p>";
+        }
+    }
 }
